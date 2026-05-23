@@ -29,6 +29,11 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' })); // 50mb to accommodate base64-encoded images
 app.use(requestLogger);
 
+// Health check — used by Render and uptime monitors to keep the service warm
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', ts: new Date().toISOString() });
+});
+
 // API Routes
 app.use('/api/conversations', conversationsRouter);
 // Mount messages router on top of the conversation id route
