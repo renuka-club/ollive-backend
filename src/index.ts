@@ -15,9 +15,19 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow all localhost origins and the configured FRONTEND_URL
-    const allowed = [config.FRONTEND_URL, 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:8080'];
-    if (!origin || allowed.includes(origin) || origin.startsWith('http://localhost:')) {
+    const allowed = [
+      config.FRONTEND_URL,
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'http://localhost:3000',
+      'http://localhost:8080',
+    ];
+    const isAllowed =
+      !origin ||
+      allowed.includes(origin) ||
+      origin.startsWith('http://localhost:') ||
+      origin.endsWith('.vercel.app'); // allow all Vercel preview deployments
+    if (isAllowed) {
       callback(null, true);
     } else {
       callback(new Error(`CORS: origin ${origin} not allowed`));
